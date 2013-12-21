@@ -16,5 +16,7 @@ Gameplay
 -----------
 
 WASD - to move
+
 F - for fullscreen
+
 Space - to jump
