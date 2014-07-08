@@ -52,13 +52,14 @@ public class MCWindow{
 		//setFullscreen(true);
 
 		while (!Display.isCloseRequested()) {
+            
 			int delta = timer.getDelta();
 			timer.update();
 
 			update(delta);
 			display();
 			updateFPS();
-
+            
 			Display.update(true);
 			Display.sync(MAXFPS);
 		}

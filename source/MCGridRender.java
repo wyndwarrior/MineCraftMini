@@ -22,7 +22,7 @@ public class MCGridRender{
 		map.get(t).add(q);
 	}
 
-	public static final double realRenderDist = MCBlock.SIDE * 50;
+	public static final double realRenderDist = MCBlock.SIDE * 40;
 	public static final double renderDist = Math.pow(realRenderDist, 2);
 	public static final double realFadeDist = realRenderDist * .93;
 	public static final double fadeDist = Math.pow(realFadeDist, 2);
@@ -43,7 +43,7 @@ public class MCGridRender{
 	}
 
 	public void render(MCPlane p, MCPerson pp, boolean back){
-
+        
 		//int count = 0;
 
 		for(Map.Entry<Texture, HashSet<MCTexturedQuad> > e : map.entrySet()){
@@ -73,7 +73,7 @@ public class MCGridRender{
 						fadeMap.get(fb).add( q );
 					}else if ( water ||q.water() ){
 						if( !q.water() )
-							fadeMap.get(MCMaterial.findBuf(MCMaterial.NORM /3 , true )).add( q );
+							fadeMap.get(MCMaterial.findBuf(MCMaterial.NORM*2/3 , true )).add( q );
 						else{
 							fadeMap.get(underWaterNorm).add( q );
 						}
@@ -97,7 +97,8 @@ public class MCGridRender{
 			clearMap();
 
 		}
-
+        
+        
 		//System.out.println (count + " rendered");
 
 	}

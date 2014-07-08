@@ -39,8 +39,9 @@ public class MCWaterGrid extends MCGrid {
 						int tx = x +mx[i];
 						int ty = y +my[i];
 						int tz = z +mz[i];
+						int tzz = tz-1;
 
-						if(ib(tx,ty,tz) && !vis[tx][ty][tz] && get(tx,ty,tz) == null && g2.get(tx,ty,tz)==null){
+						if(ib(tx,ty,tz) && !vis[tx][ty][tz] && get(tx,ty,tz) == null && g2.get(tx,ty,tz)==null/* && (!ib(x,y, tzz) || g2.get(x,y,tzz) != null)*/){
 							add.add(MineCraft.m.loadBlock('w',tx,ty,tz));
 							vis[tx][ty][tz] = true;
 						}

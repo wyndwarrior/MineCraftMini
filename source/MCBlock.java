@@ -220,15 +220,16 @@ public class MCBlock{
 				}
 				break;
 			case TOP:
+                double zz = (this instanceof MCWaterBlock) ? -SIDE * 0.1:0;
 				glNormal3d(0,0,1);
 				glTexCoord2f(0,0);
-				glVertex3d(x,y+SIDE,z+SIDE);
+				glVertex3d(x,y+SIDE,z+SIDE+zz);
 				glTexCoord2f(1,0);
-				glVertex3d(x+SIDE,y+SIDE,z+SIDE);
+				glVertex3d(x+SIDE,y+SIDE,z+SIDE+zz);
 				glTexCoord2f(1,1);
-				glVertex3d(x+SIDE,y,z+SIDE);
+				glVertex3d(x+SIDE,y,z+SIDE+zz);
 				glTexCoord2f(0,1);
-				glVertex3d(x,y,z+SIDE);
+				glVertex3d(x,y,z+SIDE+zz);
 				if( curBreak != null ){
 					glEnd();
 					curBreak.bind();

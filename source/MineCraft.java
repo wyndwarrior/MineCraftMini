@@ -1,5 +1,6 @@
 import org.lwjgl.*;
 import java.nio.*;
+import java.util.*;
 import org.lwjgl.input.*;
 import static org.lwjgl.input.Keyboard.*;
 import org.lwjgl.opengl.*;
@@ -13,15 +14,16 @@ public class MineCraft extends MCWindow {
 	MCLight light;
 	public MCGrid g;
 	public MCWaterGrid trans;
-	MCPerson p;
+	private MCPerson p;
 	MCCursor cursor;
+    MCMapGen gen;
 
 	public MineCraft(){
 		super(800, 500);
 		m = this;
 	}
 
-	protected static final int LX = 130, LY = LX, LZ = 100, G = LX/3;
+	protected static final int LX = 120, LY = LX, LZ = 100;
 
 	protected void init() {
 
@@ -52,95 +54,42 @@ public class MineCraft extends MCWindow {
 		glEnable (GL_FOG);*/
 
 		//MCMaterial.setMaterial( MCMaterial.NORM );
-
-
+        
+        gen = new MCMapGen(LX, LY, LZ);
+        genMap();
+        
 		light = new MCLight( LX/2 * MCBlock.SIDE, LY/2 * MCBlock.SIDE , LZ* MCBlock.SIDE , GL_LIGHT1);
 		light.enable();
 
 		cursor = new MCCursor(this);
 
-		g = new MCGrid(LX, LY, LZ);
-		trans = new MCWaterGrid(LX, LY, LZ);
-		p = new MCPerson(LX/2.*MCBlock.SIDE,LY/2.*MCBlock.SIDE, (LZ)*MCBlock.SIDE - MCPerson.HEIGHT , 0,90, this);
 		//p.hideMouse();
-
-		genMap();
+        
 		update(1);
 		display();
-		System.gc();
+		//System.gc();
 		//setFullscreen(true);
 
 	}
+    
+    public void genMap(){
+        
+        /*double GL = 0.1 + 0.4*Math.random();
+        double PE = 0.25 + 0.5*Math.random();
+        int OCT = (int)(2+20*Math.random());
+        
+        System.out.println(GL + " " + PE + " " + OCT);*/
+        
+        //, (int)(LZ*GL), 7, 0.4);
+		gen.genMap();
+        g = gen.getGrid();
+        trans = gen.getWater();
+		trans.g2 = g;
+        
+        p = new MCPerson(LX/2.*MCBlock.SIDE,LY/2.*MCBlock.SIDE, (LZ)*MCBlock.SIDE - MCPerson.HEIGHT , 0,90, this);
 
-	protected void genMap(){
-		int[][] height = new int[LX][LY];
-		//trig gen
-		double HEIGHT = LX/10.;
+    }
 
-		int[][] wavy = new int[LX][LY];
-		{
-			double con = HEIGHT /1.5;
-			double con2 = HEIGHT/ 1.5;
-
-			double xmanip = LX / Math.PI ;
-			double ymanip = LY / Math.PI ;
-
-			for(int k = 0; k<LX; k++){
-				for(int j = 0;j<LY; j++){
-					int hei = (int)((Math.sin((k)/xmanip)*con) + (Math.sin((j)/ymanip)*con2));
-					//height[k][j] = hei+G;
-					wavy[k][j] = hei;
-				}
-			}
-		}
-
-
-		{
-			double leftXPer = 0.29;
-			double leftX = leftXPer * LX;
-			double rightXPer = 0.71;
-			double rightX = rightXPer * LX;
-
-			double a = HEIGHT /2. / ( LX * LX * (leftXPer * rightXPer - 0.25) );
-
-			for(int x = 0; x<LX; x++)
-			for(int y = 0; y<LY; y++)
-			{
-				int dz = (int) Math.min( (a * (x - leftX) * (x - rightX)),
-													a * (y - leftX) * (y - rightX)) + wavy[x][y];
-				if (dz< 0 ) dz/=4;
-				height[x][y] = G + dz;
-			}
-		}
-
-		//grass, and ground
-		for(int x = 0; x<LX; x++)
-		for(int y = 0; y<LY; y++)
-		{
-
-			if( height[x][y] > G +4){
-				g.set(x, y, height[x][y], loadBlock('g',x,y,height[x][y]));
-				for(int z = height[x][y]-1; z>=0; z--)
-					g.set(x, y, z, loadBlock('d', x,y,z));
-			}else{
-				for(int z = height[x][y]; z>=0 && z > height[x][y]-10; z--)
-					g.set(x, y, z, loadBlock('s', x,y,z));
-				for(int z = height[x][y]-10; z>=0; z--)
-					g.set(x, y, z, loadBlock('d', x,y,z));
-			}
-		}
-
-		//add water
-		for(int x = 0; x<LX; x++)
-		for(int y = 0; y<LY; y++)
-		{
-			for(int z = G; z>height[x][y]; z--)
-				trans.set(x, y, z, loadBlock('w', x,y,z));
-		}
-
-		//trans.set(LX/2, LY/2, LZ-20 ,loadBlock('w', LX/2, LY/2, LZ-20));
-
-	}
 
 	public static MCBlock loadBlock(char c, int x, int y, int z){
 		switch(c){
@@ -150,6 +99,7 @@ public class MineCraft extends MCWindow {
 			case 'o' : return new MCWoodBlock(x *MCBlock.SIDE, y*MCBlock.SIDE, z*MCBlock.SIDE);
 			case 'l' : return new MCLeavesBlock(x *MCBlock.SIDE, y*MCBlock.SIDE, z*MCBlock.SIDE);
 			case 's' : return new MCSandBlock(x *MCBlock.SIDE, y*MCBlock.SIDE, z*MCBlock.SIDE);
+			case 't' : return new MCStoneBlock(x *MCBlock.SIDE, y*MCBlock.SIDE, z*MCBlock.SIDE);
 		}
 		return null;
 	}
@@ -157,7 +107,6 @@ public class MineCraft extends MCWindow {
 	long[] keyTime = new long[256];
 	boolean mouse;
 	protected void update(int delta){
-
 		long time = MCTimer.getTime();
 
 		if( isKeyDown( KEY_ESCAPE ) ){
@@ -183,8 +132,11 @@ public class MineCraft extends MCWindow {
 				keyTime[KEY_SPACE] = time;
 			}
 		}
+        if( isKeyDown( KEY_M ) ){
+            genMap();
+        }
 		if( isKeyDown( KEY_V ) )
-			p.boost();
+			p.shadowJump();
 
 		while( Mouse.next() ){
 			int btn = Mouse.getEventButton();

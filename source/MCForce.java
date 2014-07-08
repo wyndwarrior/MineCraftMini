@@ -30,5 +30,6 @@ class MCBoost extends MCForce{
 	public MCBoost(double[] vec){
 		x = vec[0] * MCBlock.SIDE * 8;
 		y = vec[1] * MCBlock.SIDE * 8;
+		z = vec[2] * MCBlock.SIDE * 8;
 	}
 }
