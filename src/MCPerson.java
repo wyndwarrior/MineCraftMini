@@ -218,7 +218,7 @@ public class MCPerson{
 		double side = MCBlock.SIDE;
 		
 		//System.out.println (vz);
-		//if( inWater() ) vz  = -1.7 * MCBlock.SIDE;
+		if( inWater() ) vz  = -1.7 * MCBlock.SIDE;
 		
 		if(vz < 0 ){
 			double goal = z+vz * t;
