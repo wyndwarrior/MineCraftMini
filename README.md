@@ -8,6 +8,7 @@ Features
 - Physics simulation, water simulation
 - Perlin noise algorithm to generate maps
 - Directional flood-fill to optimize rendering
+- Randomized caves, lakes
 
 Installation
 -----------
