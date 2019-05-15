@@ -116,15 +116,17 @@ public class MineCraft extends MCWindow {
 		}
 
 		double moveConst = 5e-3 * MCBlock.SIDE;
-		if( isKeyDown( KEY_W ) )
+		switch (isKeyDown){
+
+		case 'KEY_W':
 			p.move(delta * moveConst);
-		if( isKeyDown( KEY_A ) )
+		case 'KEY_A':
 			p.moveLeft(delta * moveConst);
-		if( isKeyDown( KEY_S ) )
+		case 'KEY_S':
 			p.moveBack(delta * moveConst);
-		if( isKeyDown( KEY_D ) )
+		case 'KEY_D':
 			p.moveRight(delta * moveConst);
-		if( isKeyDown( KEY_SPACE )){
+		case 'KEY_SPACE':
 			if( p.inWater() ){
 				p.jump( delta* moveConst);
 			}else if (  time - keyTime[KEY_SPACE] >  100 ){
