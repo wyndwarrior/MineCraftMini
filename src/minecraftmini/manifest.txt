@@ -1,2 +1,2 @@
-Main-Class: MineCraft
+Main-Class: minecraftmini.MineCraft
 Class-Path: lib/lwjgl.jar lib/lwjgl_util.jar lib/slick-util.jar
